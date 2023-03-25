@@ -20,7 +20,7 @@ pip install larq==0.12.2
 
 
 ## Datasets
-- [GTSRB](https://www.kaggle.com/datasets/meowmeowmeowmeowmeow/gtsrb-german-traffic-sign?datasetId=82373&language=Python
+- [GTSRB](https://www.kaggle.com/datasets/meowmeowmeowmeowmeow/gtsrb-german-traffic-sign?datasetId=82373&language=Python)
 - [Belgium](https://www.kaggle.com/datasets/shazaelmorsh/trafficsigns)
 - [Chinese](https://www.kaggle.com/datasets/dmitryyemelyanov/chinese-traffic-signs)
 
@@ -33,7 +33,7 @@ In the workspace you should have following folders:
   - GTSRB_dataset
 
 
-## How to run the scripts
+## How to run the training scripts
 Depending on which architecture you want to train, you can choose to run a certain script:
   - [xnor.py](https://github.com/apostovan21/BinarizedNeuralNetwork/blob/master/src/xnor.py)
   - [3QConv.py](https://github.com/apostovan21/BinarizedNeuralNetwork/blob/master/src/3QConv.py)
@@ -75,5 +75,25 @@ Before runing the scripts, make sure you have following folders created in your 
   - XNOR
     - *Same as for* **3QConv**.
 
+Each script has some constants defined which you can change according to the training you want to make.
+- `SIZE` by default if `30`. You can change to either `48` or `64`.
+- `EPOCHS` by default are `30`. You can change it as you want.
+
+At the end of each script there is the `main` code which calls the functions for training. If you don't want to train all variations of architectures, you can comment a certain training.
+
+## How to run the predition scripts
+First make sure you have run the training for desire architecture and you have the model and training summary saved.
+Next, edit the constants from [predition.py](https://github.com/apostovan21/BinarizedNeuralNetwork/blob/master/src/prediction.py):
+
+- `SIZE`
+- `OUTPUT_PATH`
+- `test_name`
+
+Run the script. It will update the training summary and will create confusion matrixes.
+
+## Output Results
+If you want to check our out results, you can check them [here](https://drive.google.com/drive/folders/1y2n7V7nr0tBQQSS8DhL1shnjgYUIrZ9Z).
 
 ## License
+
+TODO: Add

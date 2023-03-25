@@ -20,7 +20,7 @@ CURRENT_PATH = os.getcwd()
 OUTPUT_PATH = 'output/XNOR/'
 
 BATCH_SIZE = 32
-EPOCHS = 1
+EPOCHS = 30
 kwargs = dict(input_quantizer="ste_sign",
               kernel_quantizer="ste_sign",
               kernel_constraint="weight_clip")
@@ -180,7 +180,7 @@ def xnor_qconv_mp(X_train, X_validation, y_train, y_validation, X_test, y_test, 
                              filter_2, KERNEL_SIZE_2, NO_BN, USE_MP)
     post_build_process(model, X_train, X_validation, y_train,
                        y_validation, X_test, y_test, TEST_NAME)
-    
+
 
 def xnor_qconv(X_train, X_validation, y_train, y_validation, X_test, y_test, filter_1, filter_2):
     TEST_NAME = 'XNOR(QConv)/' + str(SIZE) + 'x' + str(SIZE) + '/3_' + str(SIZE) + '_' + str(SIZE) + \
@@ -225,25 +225,25 @@ X_test, y_test = get_testing_dataset()
 
 
 xnor_qconv(X_train, X_validation,
-                          y_train, y_validation, X_test, y_test, FILTER_32, FILTER_64)
+           y_train, y_validation, X_test, y_test, FILTER_32, FILTER_64)
 xnor_qconv(X_train, X_validation,
-                          y_train, y_validation, X_test, y_test, FILTER_64, FILTER_128)
+           y_train, y_validation, X_test, y_test, FILTER_64, FILTER_128)
 xnor_qconv(X_train, X_validation,
-                          y_train, y_validation, X_test, y_test, FILTER_16, FILTER_32)
+           y_train, y_validation, X_test, y_test, FILTER_16, FILTER_32)
 
 xnor_qconv_mp(X_train, X_validation,
-                          y_train, y_validation, X_test, y_test, FILTER_32, FILTER_64)
+              y_train, y_validation, X_test, y_test, FILTER_32, FILTER_64)
 xnor_qconv_mp(X_train, X_validation,
-                          y_train, y_validation, X_test, y_test, FILTER_64, FILTER_128)
+              y_train, y_validation, X_test, y_test, FILTER_64, FILTER_128)
 xnor_qconv_mp(X_train, X_validation,
-                          y_train, y_validation, X_test, y_test, FILTER_16, FILTER_32)
+              y_train, y_validation, X_test, y_test, FILTER_16, FILTER_32)
 
 xnor_qconv_modified_bn(X_train, X_validation,
-                          y_train, y_validation, X_test, y_test, FILTER_32, FILTER_64)
+                       y_train, y_validation, X_test, y_test, FILTER_32, FILTER_64)
 xnor_qconv_modified_bn(X_train, X_validation,
-                          y_train, y_validation, X_test, y_test, FILTER_64, FILTER_128)
+                       y_train, y_validation, X_test, y_test, FILTER_64, FILTER_128)
 xnor_qconv_modified_bn(X_train, X_validation,
-                          y_train, y_validation, X_test, y_test, FILTER_16, FILTER_32)
+                       y_train, y_validation, X_test, y_test, FILTER_16, FILTER_32)
 
 xnor_qconv_mp_enhanced_bn(X_train, X_validation,
                           y_train, y_validation, X_test, y_test, FILTER_32, FILTER_64)

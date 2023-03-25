@@ -188,7 +188,7 @@ chinese_x_test, chinese_y_test = get_dataset(
     'datasets/Chinese_dataset/annotations_v5.csv', 'category', 'file_name', 'datasets/Chinese_dataset/images/')
 belgium_x_test, belgium_y_test = getLabelsAndImagesBelgian()
 
-test_name = '3_' + str(SIZE) + '_' + str(SIZE) + \
+test_name = str(SIZE) + 'x' + str(SIZE) + '/3_' + str(SIZE) + '_' + str(SIZE) + \
     '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_43_ep_30'
 predict_all(german_x_test, german_y_test, chinese_x_test,
             chinese_y_test, belgium_x_test, belgium_y_test, test_name)

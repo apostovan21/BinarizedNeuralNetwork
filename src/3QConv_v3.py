@@ -15,7 +15,7 @@ import larq as lq
 
 # CONSTANTS
 CLASSES = 43
-SIZE = 48
+SIZE = 30
 IMG_RESIZE = (SIZE, SIZE)
 CURRENT_PATH = os.getcwd()
 OUTPUT_PATH = 'output/extra_architectures/3QConv_v3/'

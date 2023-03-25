@@ -393,3 +393,23 @@ QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_1024_BN_Dense_43(
 
 QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_64_BN_Dense_43(
     X_train, X_validation, y_train, y_validation, X_test, y_test)
+
+
+if(SIZE > 30):
+    QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_Dense_43(
+        X_train, X_validation, y_train, y_validation, X_test, y_test)
+
+    QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_Dense_256_BN_Dense_43(
+        X_train, X_validation, y_train, y_validation, X_test, y_test)
+
+    QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_Dense_128_BN_Dense_43(
+        X_train, X_validation, y_train, y_validation, X_test, y_test)
+
+    QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_Dense_512_BN_Dense_43(
+        X_train, X_validation, y_train, y_validation, X_test, y_test)
+
+    QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_Dense_1024_BN_Dense_43(
+        X_train, X_validation, y_train, y_validation, X_test, y_test)
+
+    QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_Dense_64_BN_Dense_43(
+        X_train, X_validation, y_train, y_validation, X_test, y_test)

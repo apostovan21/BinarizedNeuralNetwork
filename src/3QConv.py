@@ -15,7 +15,7 @@ import larq as lq
 
 # CONSTANTS
 CLASSES = 43
-SIZE = 64
+SIZE = 30
 IMG_RESIZE = (SIZE, SIZE)
 CURRENT_PATH = os.getcwd()
 OUTPUT_PATH = 'output/3QConv/'
@@ -380,20 +380,41 @@ X_train, X_validation, y_train, y_validation = split_in_training_n_test(
 
 X_test, y_test = get_testing_dataset()
 
-QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_43(
+
+QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_43(
     X_train, X_validation, y_train, y_validation, X_test, y_test)
 
-QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_256_BN_Dense_43(
+QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_256_BN_Dense_43(
     X_train, X_validation, y_train, y_validation, X_test, y_test)
 
-QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_128_BN_Dense_43(
+QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_128_BN_Dense_43(
     X_train, X_validation, y_train, y_validation, X_test, y_test)
 
-QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_512_BN_Dense_43(
+QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_512_BN_Dense_43(
     X_train, X_validation, y_train, y_validation, X_test, y_test)
 
-QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_1024_BN_Dense_43(
+QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_1024_BN_Dense_43(
     X_train, X_validation, y_train, y_validation, X_test, y_test)
 
-QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_64_BN_Dense_43(
+QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_64_BN_Dense_43(
     X_train, X_validation, y_train, y_validation, X_test, y_test)
+
+
+if(SIZE > 30):
+    QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_43(
+        X_train, X_validation, y_train, y_validation, X_test, y_test)
+
+    QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_256_BN_Dense_43(
+        X_train, X_validation, y_train, y_validation, X_test, y_test)
+
+    QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_128_BN_Dense_43(
+        X_train, X_validation, y_train, y_validation, X_test, y_test)
+
+    QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_512_BN_Dense_43(
+        X_train, X_validation, y_train, y_validation, X_test, y_test)
+
+    QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_1024_BN_Dense_43(
+        X_train, X_validation, y_train, y_validation, X_test, y_test)
+
+    QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_64_BN_Dense_43(
+        X_train, X_validation, y_train, y_validation, X_test, y_test)
