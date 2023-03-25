@@ -1,4 +1,3 @@
-from datetime import datetime
 from sklearn.metrics import accuracy_score
 import numpy as np
 import pandas as pd
@@ -15,13 +14,13 @@ import larq as lq
 
 # CONSTANTS
 CLASSES = 43
-SIZE = 48
+SIZE = 30
 IMG_RESIZE = (SIZE, SIZE)
 CURRENT_PATH = os.getcwd()
-OUTPUT_PATH = 'output/3QConv_v3/'
+OUTPUT_PATH = 'output/XNOR/'
 
 BATCH_SIZE = 32
-EPOCHS = 30
+EPOCHS = 1
 kwargs = dict(input_quantizer="ste_sign",
               kernel_quantizer="ste_sign",
               kernel_constraint="weight_clip")
@@ -33,16 +32,9 @@ FILTER_16 = 16
 KERNEL_SIZE_5 = (5, 5)
 KERNEL_SIZE_3 = (3, 3)
 KERNEL_SIZE_2 = (2, 2)
-NO_DENSE = 0
-DENSE_64 = 64
-DENSE_128 = 128
-DENSE_256 = 256
-DENSE_512 = 512
-DENSE_1024 = 1024
 
 USE_BN = True
 USE_MP = True
-USE_MP3 = True
 NO_BN = False
 NO_MP = False
 ####################
@@ -59,6 +51,8 @@ def get_training_dataset():
         images = os.listdir(path)
 
         for a in images:
+            #print(path + '\\' + a)
+
             try:
                 image = Image.open(path + '/' + a)
                 image = image.resize(IMG_RESIZE)
@@ -100,7 +94,7 @@ def split_in_training_n_test(data, labels):
     return X_train, X_validation, y_train, y_validation
 
 
-def build_model(filter1, kernel_size1, filter2, kernel_size2, filter3, kernel_size3, neurons_dense1, use_batchnormalization, use_maxpooling):
+def build_xnor_model(filter1, kernel_size1, filter2, kernel_size2, use_batchnormalization, use_maxpooling):
     # Building the model
     model = tf.keras.models.Sequential()
 
@@ -112,9 +106,6 @@ def build_model(filter1, kernel_size1, filter2, kernel_size2, filter3, kernel_si
                                     input_shape=(SIZE, SIZE, 3)))
     if use_maxpooling:
         model.add(tf.keras.layers.MaxPooling2D((2, 2)))
-    if use_batchnormalization:
-        model.add(tf.keras.layers.BatchNormalization(scale=False))
-
     # Block 2
     model.add(lq.layers.QuantConv2D(
         filter2, kernel_size2, use_bias=False, **kwargs))
@@ -123,15 +114,7 @@ def build_model(filter1, kernel_size1, filter2, kernel_size2, filter3, kernel_si
     if use_batchnormalization:
         model.add(tf.keras.layers.BatchNormalization(scale=False))
 
-    model.add(lq.layers.QuantConv2D(
-        filter3, kernel_size3, use_bias=False, **kwargs))
-
     model.add(tf.keras.layers.Flatten())
-
-    if neurons_dense1 != 0:
-        model.add(lq.layers.QuantDense(
-            neurons_dense1, use_bias=False, **kwargs))
-
     # Output layer
     model.add(lq.layers.QuantDense(CLASSES, use_bias=False, **kwargs))
     model.add(tf.keras.layers.Activation("softmax"))
@@ -176,13 +159,6 @@ def get_n_save_test_accuracy(model, X_test, y_test, test_name):
             print(accuracy_score(y_test, np.argmax(pred, axis=1)))
 
 
-def get_n_save_execution_time(start, end, test_name):
-    elapsed = (end - start).total_seconds() / 60
-    with open(OUTPUT_PATH + 'training_summary/' + test_name + '.txt', 'a') as f:
-        with contextlib.redirect_stdout(f):
-            print('\nTest Execution time: ' + str(elapsed) + ' minutes.')
-
-
 def post_build_process(model, X_train, X_validation, y_train, y_validation, X_test, y_test, test_name):
     history = compile_n_fit(
         model, X_train, X_validation, y_train, y_validation)
@@ -195,113 +171,83 @@ def post_build_process(model, X_train, X_validation, y_train, y_validation, X_te
     get_n_save_test_accuracy(model, X_test, y_test, test_name)
 
 
-def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
-    TEST_NAME = '3_' + str(SIZE) + '_' + str(SIZE) + \
-        '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_43_ep_' + \
-        str(EPOCHS)
+def xnor_qconv_mp(X_train, X_validation, y_train, y_validation, X_test, y_test, filter_1, filter_2):
+    TEST_NAME = 'XNOR(QConv, MP)/' + str(SIZE) + 'x' + str(SIZE) + '/3_' + str(SIZE) + '_' + str(SIZE) + \
+        '_QConv_' + str(filter_1) + '_3_MP_2_QConv_' + \
+        str(filter_2) + '_2_MP_2_BN_Dense_43_ep_' + str(EPOCHS)
 
-    start = datetime.now()
-    model = build_model(FILTER_32, KERNEL_SIZE_5, FILTER_64, KERNEL_SIZE_5,
-                        FILTER_64, KERNEL_SIZE_3, NO_DENSE, USE_BN, USE_MP)
+    model = build_xnor_model(filter_1, KERNEL_SIZE_3,
+                             filter_2, KERNEL_SIZE_2, NO_BN, USE_MP)
     post_build_process(model, X_train, X_validation, y_train,
                        y_validation, X_test, y_test, TEST_NAME)
-    end = datetime.now()
-    get_n_save_execution_time(start, end, TEST_NAME)
+    
 
+def xnor_qconv(X_train, X_validation, y_train, y_validation, X_test, y_test, filter_1, filter_2):
+    TEST_NAME = 'XNOR(QConv)/' + str(SIZE) + 'x' + str(SIZE) + '/3_' + str(SIZE) + '_' + str(SIZE) + \
+        '_QConv_' + str(filter_1) + '_3_MP_2_QConv_' + \
+        str(filter_2) + '_2_MP_2_BN_Dense_43_ep_' + str(EPOCHS)
 
-def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_256_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
-    TEST_NAME = '3_' + str(SIZE) + '_' + str(SIZE) + \
-        '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_256_Dense_43_ep_' + \
-        str(EPOCHS)
-
-    start = datetime.now()
-    model = build_model(FILTER_32, KERNEL_SIZE_5, FILTER_64, KERNEL_SIZE_5,
-                        FILTER_64, KERNEL_SIZE_3, DENSE_256, USE_BN, USE_MP)
+    model = build_xnor_model(filter_1, KERNEL_SIZE_3,
+                             filter_2, KERNEL_SIZE_2, USE_BN, NO_MP)
     post_build_process(model, X_train, X_validation, y_train,
                        y_validation, X_test, y_test, TEST_NAME)
-    end = datetime.now()
-    get_n_save_execution_time(start, end, TEST_NAME)
 
 
-def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_128_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
-    TEST_NAME = '3_' + str(SIZE) + '_' + str(SIZE) + \
-        '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_128_Dense_43_ep_' + \
-        str(EPOCHS)
+def xnor_qconv_mp_enhanced_bn(X_train, X_validation, y_train, y_validation, X_test, y_test, filter_1, filter_2):
+    TEST_NAME = 'XNOR(QConv, MP) enhanced (BN)/' + str(SIZE) + 'x' + str(SIZE) + '/3_' + str(SIZE) + '_' + str(SIZE) + \
+        '_QConv_' + str(filter_1) + '_3_MP_2_QConv_' + \
+        str(filter_2) + '_2_MP_2_BN_Dense_43_ep_' + str(EPOCHS)
 
-    start = datetime.now()
-    model = build_model(FILTER_32, KERNEL_SIZE_5, FILTER_64, KERNEL_SIZE_5,
-                        FILTER_64, KERNEL_SIZE_3, DENSE_128, USE_BN, USE_MP)
+    model = build_xnor_model(filter_1, KERNEL_SIZE_3,
+                             filter_2, KERNEL_SIZE_2, USE_BN, USE_MP)
     post_build_process(model, X_train, X_validation, y_train,
                        y_validation, X_test, y_test, TEST_NAME)
-    end = datetime.now()
-    get_n_save_execution_time(start, end, TEST_NAME)
 
 
-def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_512_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
-    TEST_NAME = '3_' + str(SIZE) + '_' + str(SIZE) + \
-        '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_512_Dense_43_ep_' + \
-        str(EPOCHS)
+def xnor_qconv_modified_bn(X_train, X_validation, y_train, y_validation, X_test, y_test, filter_1, filter_2):
+    TEST_NAME = 'XNOR(QConv) modified (BN)/' + str(SIZE) + 'x' + str(SIZE) + '/3_' + str(SIZE) + '_' + str(SIZE) + \
+        '_QConv_' + str(filter_1) + '_3_MP_2_QConv_' + \
+        str(filter_2) + '_2_MP_2_BN_Dense_43_ep_' + str(EPOCHS)
 
-    start = datetime.now()
-    model = build_model(FILTER_32, KERNEL_SIZE_5, FILTER_64, KERNEL_SIZE_5,
-                        FILTER_64, KERNEL_SIZE_3, DENSE_512, USE_BN, USE_MP)
+    model = build_xnor_model(filter_1, KERNEL_SIZE_3,
+                             filter_2, KERNEL_SIZE_2, USE_BN, NO_MP)
     post_build_process(model, X_train, X_validation, y_train,
                        y_validation, X_test, y_test, TEST_NAME)
-    end = datetime.now()
-    get_n_save_execution_time(start, end, TEST_NAME)
-
-
-def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_1024_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
-    TEST_NAME = '3_' + str(SIZE) + '_' + str(SIZE) + \
-        '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_1024_Dense_43_ep_' + \
-        str(EPOCHS)
-
-    start = datetime.now()
-    model = build_model(FILTER_32, KERNEL_SIZE_5, FILTER_64, KERNEL_SIZE_5,
-                        FILTER_64, KERNEL_SIZE_3, DENSE_1024, USE_BN, USE_MP)
-    post_build_process(model, X_train, X_validation, y_train,
-                       y_validation, X_test, y_test, TEST_NAME)
-    end = datetime.now()
-    get_n_save_execution_time(start, end, TEST_NAME)
-
-
-def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_64_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
-    TEST_NAME = '3_' + str(SIZE) + '_' + str(SIZE) + \
-        '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_64_Dense_43_ep_' + \
-        str(EPOCHS)
-
-    start = datetime.now()
-    model = build_model(FILTER_32, KERNEL_SIZE_5, FILTER_64, KERNEL_SIZE_5,
-                        FILTER_64, KERNEL_SIZE_3, DENSE_64, USE_BN, USE_MP)
-    post_build_process(model, X_train, X_validation, y_train,
-                       y_validation, X_test, y_test, TEST_NAME)
-    end = datetime.now()
-    get_n_save_execution_time(start, end, TEST_NAME)
-
-######
 
 
 # MAIN CODE
+
 data, labels = get_training_dataset()
 X_train, X_validation, y_train, y_validation = split_in_training_n_test(
     data, labels)
 
 X_test, y_test = get_testing_dataset()
 
-QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_43(
-    X_train, X_validation, y_train, y_validation, X_test, y_test)
 
-QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_256_Dense_43(
-    X_train, X_validation, y_train, y_validation, X_test, y_test)
+xnor_qconv(X_train, X_validation,
+                          y_train, y_validation, X_test, y_test, FILTER_32, FILTER_64)
+xnor_qconv(X_train, X_validation,
+                          y_train, y_validation, X_test, y_test, FILTER_64, FILTER_128)
+xnor_qconv(X_train, X_validation,
+                          y_train, y_validation, X_test, y_test, FILTER_16, FILTER_32)
 
-QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_128_Dense_43(
-    X_train, X_validation, y_train, y_validation, X_test, y_test)
+xnor_qconv_mp(X_train, X_validation,
+                          y_train, y_validation, X_test, y_test, FILTER_32, FILTER_64)
+xnor_qconv_mp(X_train, X_validation,
+                          y_train, y_validation, X_test, y_test, FILTER_64, FILTER_128)
+xnor_qconv_mp(X_train, X_validation,
+                          y_train, y_validation, X_test, y_test, FILTER_16, FILTER_32)
 
-QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_512_Dense_43(
-    X_train, X_validation, y_train, y_validation, X_test, y_test)
+xnor_qconv_modified_bn(X_train, X_validation,
+                          y_train, y_validation, X_test, y_test, FILTER_32, FILTER_64)
+xnor_qconv_modified_bn(X_train, X_validation,
+                          y_train, y_validation, X_test, y_test, FILTER_64, FILTER_128)
+xnor_qconv_modified_bn(X_train, X_validation,
+                          y_train, y_validation, X_test, y_test, FILTER_16, FILTER_32)
 
-QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_1024_Dense_43(
-    X_train, X_validation, y_train, y_validation, X_test, y_test)
-
-QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_64_Dense_43(
-    X_train, X_validation, y_train, y_validation, X_test, y_test)
+xnor_qconv_mp_enhanced_bn(X_train, X_validation,
+                          y_train, y_validation, X_test, y_test, FILTER_32, FILTER_64)
+xnor_qconv_mp_enhanced_bn(X_train, X_validation,
+                          y_train, y_validation, X_test, y_test, FILTER_64, FILTER_128)
+xnor_qconv_mp_enhanced_bn(X_train, X_validation,
+                          y_train, y_validation, X_test, y_test, FILTER_16, FILTER_32)

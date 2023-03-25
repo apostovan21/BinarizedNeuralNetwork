@@ -18,7 +18,7 @@ CLASSES = 43
 SIZE = 48
 IMG_RESIZE = (SIZE, SIZE)
 CURRENT_PATH = os.getcwd()
-OUTPUT_PATH = 'output/3QConv_v4/'
+OUTPUT_PATH = 'output/extra_architectures/3QConv_v3/'
 
 BATCH_SIZE = 32
 EPOCHS = 30
@@ -100,7 +100,7 @@ def split_in_training_n_test(data, labels):
     return X_train, X_validation, y_train, y_validation
 
 
-def build_model(filter1, kernel_size1, filter2, kernel_size2, filter3, kernel_size3, neurons_dense1, use_batchnormalization, use_maxpooling, use_maxpooling3=False):
+def build_model(filter1, kernel_size1, filter2, kernel_size2, filter3, kernel_size3, neurons_dense1, use_batchnormalization, use_maxpooling):
     # Building the model
     model = tf.keras.models.Sequential()
 
@@ -125,10 +125,6 @@ def build_model(filter1, kernel_size1, filter2, kernel_size2, filter3, kernel_si
 
     model.add(lq.layers.QuantConv2D(
         filter3, kernel_size3, use_bias=False, **kwargs))
-    if SIZE > 30 and use_maxpooling and use_maxpooling3:
-        model.add(tf.keras.layers.MaxPooling2D((2, 2)))
-    if use_batchnormalization:
-        model.add(tf.keras.layers.BatchNormalization(scale=False))
 
     model.add(tf.keras.layers.Flatten())
 
@@ -199,9 +195,9 @@ def post_build_process(model, X_train, X_validation, y_train, y_validation, X_te
     get_n_save_test_accuracy(model, X_test, y_test, test_name)
 
 
-def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
-    TEST_NAME = '3_' + str(SIZE) + '_' + str(SIZE) + \
-        '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_43_ep_' + \
+def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
+    TEST_NAME = str(SIZE) + 'x' + str(SIZE) + '/3_' + str(SIZE) + '_' + str(SIZE) + \
+        '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_43_ep_' + \
         str(EPOCHS)
 
     start = datetime.now()
@@ -213,9 +209,9 @@ def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_43(X_train, X_vali
     get_n_save_execution_time(start, end, TEST_NAME)
 
 
-def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_256_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
-    TEST_NAME = '3_' + str(SIZE) + '_' + str(SIZE) + \
-        '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_256_Dense_43_ep_' + \
+def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_256_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
+    TEST_NAME = str(SIZE) + 'x' + str(SIZE) + '/3_' + str(SIZE) + '_' + str(SIZE) + \
+        '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_256_Dense_43_ep_' + \
         str(EPOCHS)
 
     start = datetime.now()
@@ -227,9 +223,9 @@ def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_256_Dense_43(X_tra
     get_n_save_execution_time(start, end, TEST_NAME)
 
 
-def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_128_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
-    TEST_NAME = '3_' + str(SIZE) + '_' + str(SIZE) + \
-        '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_128_Dense_43_ep_' + \
+def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_128_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
+    TEST_NAME = str(SIZE) + 'x' + str(SIZE) + '/3_' + str(SIZE) + '_' + str(SIZE) + \
+        '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_128_Dense_43_ep_' + \
         str(EPOCHS)
 
     start = datetime.now()
@@ -241,9 +237,9 @@ def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_128_Dense_43(X_tra
     get_n_save_execution_time(start, end, TEST_NAME)
 
 
-def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_512_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
-    TEST_NAME = '3_' + str(SIZE) + '_' + str(SIZE) + \
-        '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_512_Dense_43_ep_' + \
+def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_512_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
+    TEST_NAME = str(SIZE) + 'x' + str(SIZE) + '/3_' + str(SIZE) + '_' + str(SIZE) + \
+        '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_512_Dense_43_ep_' + \
         str(EPOCHS)
 
     start = datetime.now()
@@ -255,9 +251,9 @@ def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_512_Dense_43(X_tra
     get_n_save_execution_time(start, end, TEST_NAME)
 
 
-def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_1024_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
-    TEST_NAME = '3_' + str(SIZE) + '_' + str(SIZE) + \
-        '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_1024_Dense_43_ep_' + \
+def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_1024_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
+    TEST_NAME = str(SIZE) + 'x' + str(SIZE) + '/3_' + str(SIZE) + '_' + str(SIZE) + \
+        '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_1024_Dense_43_ep_' + \
         str(EPOCHS)
 
     start = datetime.now()
@@ -269,9 +265,9 @@ def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_1024_Dense_43(X_tr
     get_n_save_execution_time(start, end, TEST_NAME)
 
 
-def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_64_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
-    TEST_NAME = '3_' + str(SIZE) + '_' + str(SIZE) + \
-        '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_64_Dense_43_ep_' + \
+def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_64_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
+    TEST_NAME = str(SIZE) + 'x' + str(SIZE) + '/3_' + str(SIZE) + '_' + str(SIZE) + \
+        '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_64_Dense_43_ep_' + \
         str(EPOCHS)
 
     start = datetime.now()
@@ -284,8 +280,6 @@ def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_64_Dense_43(X_trai
 
 ######
 
-#####
-
 
 # MAIN CODE
 data, labels = get_training_dataset()
@@ -294,20 +288,20 @@ X_train, X_validation, y_train, y_validation = split_in_training_n_test(
 
 X_test, y_test = get_testing_dataset()
 
-# QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_2_BN_Dense_43(
-#     X_train, X_validation, y_train, y_validation, X_test, y_test)
-
-QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_256_Dense_43(
+QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_43(
     X_train, X_validation, y_train, y_validation, X_test, y_test)
 
-QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_128_Dense_43(
+QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_256_Dense_43(
     X_train, X_validation, y_train, y_validation, X_test, y_test)
 
-QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_512_Dense_43(
+QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_128_Dense_43(
     X_train, X_validation, y_train, y_validation, X_test, y_test)
 
-QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_1024_Dense_43(
+QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_512_Dense_43(
     X_train, X_validation, y_train, y_validation, X_test, y_test)
 
-QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_64_Dense_43(
+QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_1024_Dense_43(
+    X_train, X_validation, y_train, y_validation, X_test, y_test)
+
+QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_64_Dense_43(
     X_train, X_validation, y_train, y_validation, X_test, y_test)

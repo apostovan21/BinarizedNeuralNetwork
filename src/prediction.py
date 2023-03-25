@@ -63,50 +63,6 @@ classes = {1: 'Speed limit (20km/h)',
            42: 'End of no passing',
            43: 'End no passing veh > 3.5 tons'}
 
-classesAbv = {0: 'Sp L (20km/h)',
-              1: 'Sp L (30km/h)',
-              2: 'Sp L (50km/h)',
-              3: 'Sp L (60km/h)',
-              4: 'Sp L (70km/h)',
-              5: 'Sp L (80km/h)',
-              6: 'End of Sp L (80km/h)',
-              7: 'Sp L (100km/h)',
-              8: 'Sp L (120km/h)',
-              9: 'No passing',
-              10: 'NoPass > 3.5 tons',
-              11: 'Right-of-way ...',
-              12: 'Priority road',
-              13: 'Yield',
-              14: 'Stop',
-              15: 'No vehicles',
-              16: 'Veh > 3.5t prohibited',
-              17: 'No entry',
-              18: 'General caution',
-              19: 'Dangerous curve L',
-              20: 'Dangerous curve R',
-              21: 'Double curve',
-              22: 'Bumpy road',
-              23: 'Slippery road',
-              24: 'Road narrows R',
-              25: 'Road work',
-              26: 'Traffic signals',
-              27: 'Pedestrians',
-              28: 'Children crossing',
-              29: 'Bicycles crossing',
-              30: 'Beware of ice/snow',
-              31: 'Wild an. crossing',
-              32: 'End Sp + pass limits',
-              33: 'Turn right ahead',
-              34: 'Turn left ahead',
-              35: 'Ahead only',
-              36: 'Go straight or R',
-              37: 'Go straight or L',
-              38: 'Keep right',
-              39: 'Keep left',
-              40: 'Roundabout M',
-              41: 'End of no passing',
-              42: 'End NoPass V>3.5t'}
-
 
 def get_dataset(path_to_ds, class_id_col_name, path_to_img_col_name, path_to_img):
     ds = pd.read_csv(path_to_ds)
@@ -139,7 +95,7 @@ def get_n_save_accuracy(X_test, y_test, test_name, dataset_name):
 
 
 def get_n_save_confusion_matrix(X_test, y_test, y_pred, test_name, dataset_name, should_delete_rows=False):
-    cm = confusion_matrix(y_test, y_pred, normalize='true')  # normalize='true'
+    cm = confusion_matrix(y_test, y_pred, normalize='true')
 
     disp_labels = classes.values()
     if(should_delete_rows):

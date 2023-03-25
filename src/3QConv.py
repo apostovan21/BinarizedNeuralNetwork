@@ -15,10 +15,10 @@ import larq as lq
 
 # CONSTANTS
 CLASSES = 43
-SIZE = 48
+SIZE = 64
 IMG_RESIZE = (SIZE, SIZE)
 CURRENT_PATH = os.getcwd()
-OUTPUT_PATH = 'output/3QConv_v2/'
+OUTPUT_PATH = 'output/3QConv/'
 
 BATCH_SIZE = 32
 EPOCHS = 30
@@ -100,7 +100,7 @@ def split_in_training_n_test(data, labels):
     return X_train, X_validation, y_train, y_validation
 
 
-def build_model(filter1, kernel_size1, filter2, kernel_size2, filter3, kernel_size3, neurons_dense1, use_batchnormalization, use_maxpooling):
+def build_model(filter1, kernel_size1, filter2, kernel_size2, filter3, kernel_size3, neurons_dense1, use_batchnormalization, use_maxpooling, use_maxpooling3=False):
     # Building the model
     model = tf.keras.models.Sequential()
 
@@ -125,6 +125,10 @@ def build_model(filter1, kernel_size1, filter2, kernel_size2, filter3, kernel_si
 
     model.add(lq.layers.QuantConv2D(
         filter3, kernel_size3, use_bias=False, **kwargs))
+    if SIZE > 30 and use_maxpooling and use_maxpooling3:
+        model.add(tf.keras.layers.MaxPooling2D((2, 2)))
+    if use_batchnormalization:
+        model.add(tf.keras.layers.BatchNormalization(scale=False))
 
     model.add(tf.keras.layers.Flatten())
 
@@ -197,9 +201,9 @@ def post_build_process(model, X_train, X_validation, y_train, y_validation, X_te
     get_n_save_test_accuracy(model, X_test, y_test, test_name)
 
 
-def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
-    TEST_NAME = '3_' + str(SIZE) + '_' + str(SIZE) + \
-        '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_43_ep_' + \
+def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
+    TEST_NAME = str(SIZE) + 'x' + str(SIZE) + '/3_' + str(SIZE) + '_' + str(SIZE) + \
+        '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_43_ep_' + \
         str(EPOCHS)
 
     start = datetime.now()
@@ -211,9 +215,9 @@ def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_43(X_train, X_validat
     get_n_save_execution_time(start, end, TEST_NAME)
 
 
-def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_256_BN_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
-    TEST_NAME = '3_' + str(SIZE) + '_' + str(SIZE) + \
-        '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_256_BN_Dense_43_ep_' + \
+def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_256_BN_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
+    TEST_NAME = str(SIZE) + 'x' + str(SIZE) + '/3_' + str(SIZE) + '_' + str(SIZE) + \
+        '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_256_BN_Dense_43_ep_' + \
         str(EPOCHS)
 
     start = datetime.now()
@@ -225,9 +229,9 @@ def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_256_BN_Dense_43(X_tra
     get_n_save_execution_time(start, end, TEST_NAME)
 
 
-def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_128_BN_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
-    TEST_NAME = '3_' + str(SIZE) + '_' + str(SIZE) + \
-        '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_128_BN_Dense_43_ep_' + \
+def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_128_BN_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
+    TEST_NAME = str(SIZE) + 'x' + str(SIZE) + '/3_' + str(SIZE) + '_' + str(SIZE) + \
+        '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_128_BN_Dense_43_ep_' + \
         str(EPOCHS)
 
     start = datetime.now()
@@ -239,9 +243,9 @@ def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_128_BN_Dense_43(X_tra
     get_n_save_execution_time(start, end, TEST_NAME)
 
 
-def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_512_BN_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
-    TEST_NAME = '3_' + str(SIZE) + '_' + str(SIZE) + \
-        '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_512_BN_Dense_43_ep_' + \
+def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_512_BN_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
+    TEST_NAME = str(SIZE) + 'x' + str(SIZE) + '/3_' + str(SIZE) + '_' + str(SIZE) + \
+        '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_512_BN_Dense_43_ep_' + \
         str(EPOCHS)
 
     start = datetime.now()
@@ -253,9 +257,9 @@ def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_512_BN_Dense_43(X_tra
     get_n_save_execution_time(start, end, TEST_NAME)
 
 
-def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_1024_BN_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
-    TEST_NAME = '3_' + str(SIZE) + '_' + str(SIZE) + \
-        '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_1024_BN_Dense_43_ep_' + \
+def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_1024_BN_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
+    TEST_NAME = str(SIZE) + 'x' + str(SIZE) + '/3_' + str(SIZE) + '_' + str(SIZE) + \
+        '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_1024_BN_Dense_43_ep_' + \
         str(EPOCHS)
 
     start = datetime.now()
@@ -267,9 +271,9 @@ def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_1024_BN_Dense_43(X_tr
     get_n_save_execution_time(start, end, TEST_NAME)
 
 
-def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_64_BN_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
-    TEST_NAME = '3_' + str(SIZE) + '_' + str(SIZE) + \
-        '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_64_BN_Dense_43_ep_' + \
+def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_64_BN_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
+    TEST_NAME = str(SIZE) + 'x' + str(SIZE) + '/3_' + str(SIZE) + '_' + str(SIZE) + \
+        '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_BN_Dense_64_BN_Dense_43_ep_' + \
         str(EPOCHS)
 
     start = datetime.now()
@@ -284,7 +288,7 @@ def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_64_BN_Dense_43(X_trai
 
 
 def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
-    TEST_NAME = '3_' + str(SIZE) + '_' + str(SIZE) + \
+    TEST_NAME = str(SIZE) + 'x' + str(SIZE) + '/3_' + str(SIZE) + '_' + str(SIZE) + \
         '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_43_ep_' + \
         str(EPOCHS)
 
@@ -298,7 +302,7 @@ def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_43(X_train, X
 
 
 def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_256_BN_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
-    TEST_NAME = '3_' + str(SIZE) + '_' + str(SIZE) + \
+    TEST_NAME = str(SIZE) + 'x' + str(SIZE) + '/3_' + str(SIZE) + '_' + str(SIZE) + \
         '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_256_BN_Dense_43_ep_' + \
         str(EPOCHS)
 
@@ -312,7 +316,7 @@ def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_256_BN_Dense_
 
 
 def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_128_BN_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
-    TEST_NAME = '3_' + str(SIZE) + '_' + str(SIZE) + \
+    TEST_NAME = str(SIZE) + 'x' + str(SIZE) + '/3_' + str(SIZE) + '_' + str(SIZE) + \
         '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_128_BN_Dense_43_ep_' + \
         str(EPOCHS)
 
@@ -326,7 +330,7 @@ def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_128_BN_Dense_
 
 
 def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_512_BN_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
-    TEST_NAME = '3_' + str(SIZE) + '_' + str(SIZE) + \
+    TEST_NAME = str(SIZE) + 'x' + str(SIZE) + '/3_' + str(SIZE) + '_' + str(SIZE) + \
         '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_512_BN_Dense_43_ep_' + \
         str(EPOCHS)
 
@@ -340,7 +344,7 @@ def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_512_BN_Dense_
 
 
 def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_1024_BN_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
-    TEST_NAME = '3_' + str(SIZE) + '_' + str(SIZE) + \
+    TEST_NAME = str(SIZE) + 'x' + str(SIZE) + '/3_' + str(SIZE) + '_' + str(SIZE) + \
         '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_1024_BN_Dense_43_ep_' + \
         str(EPOCHS)
 
@@ -354,7 +358,7 @@ def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_1024_BN_Dense
 
 
 def QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_64_BN_Dense_43(X_train, X_validation, y_train, y_validation, X_test, y_test):
-    TEST_NAME = '3_' + str(SIZE) + '_' + str(SIZE) + \
+    TEST_NAME = str(SIZE) + 'x' + str(SIZE) + '/3_' + str(SIZE) + '_' + str(SIZE) + \
         '_QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_64_BN_Dense_43_ep_' + \
         str(EPOCHS)
 
@@ -376,20 +380,20 @@ X_train, X_validation, y_train, y_validation = split_in_training_n_test(
 
 X_test, y_test = get_testing_dataset()
 
-QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_43(
+QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_43(
     X_train, X_validation, y_train, y_validation, X_test, y_test)
 
-QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_256_BN_Dense_43(
+QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_256_BN_Dense_43(
     X_train, X_validation, y_train, y_validation, X_test, y_test)
 
-QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_128_BN_Dense_43(
+QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_128_BN_Dense_43(
     X_train, X_validation, y_train, y_validation, X_test, y_test)
 
-QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_512_BN_Dense_43(
+QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_512_BN_Dense_43(
     X_train, X_validation, y_train, y_validation, X_test, y_test)
 
-QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_1024_BN_Dense_43(
+QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_1024_BN_Dense_43(
     X_train, X_validation, y_train, y_validation, X_test, y_test)
 
-QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_Dense_64_BN_Dense_43(
+QConv_32_5_MP_2_BN_QConv_64_5_MP_2_BN_QConv_64_3_MP_2_BN_Dense_64_BN_Dense_43(
     X_train, X_validation, y_train, y_validation, X_test, y_test)
