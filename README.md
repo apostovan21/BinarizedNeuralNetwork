@@ -93,7 +93,3 @@ Run the script. It will update the training summary and will create confusion ma
 
 ## Output Results
 If you want to check our out results, you can check them [here](https://drive.google.com/drive/folders/1y2n7V7nr0tBQQSS8DhL1shnjgYUIrZ9Z).
-
-## License
-
-TODO: Add
